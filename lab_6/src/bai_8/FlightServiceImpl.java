@@ -21,19 +21,29 @@ public class FlightServiceImpl extends UnicastRemoteObject implements IFlightSer
 	@Override
 	public boolean bookTicket(String flightNumber, int seats) throws RemoteException {
 		// TODO Auto-generated method stub
-		return false;
+		int currentSeats = flights.getOrDefault(flightNumber, -1);
+        if (currentSeats >= seats) {
+            flights.put(flightNumber, currentSeats - seats);
+            return true;
+        }
+        return false;
 	}
 
 	@Override
 	public int availableSeats(String flightNumber) throws RemoteException {
 		// TODO Auto-generated method stub
-		return 0;
+		return flights.getOrDefault(flightNumber, 0);
 	}
 
 	@Override
 	public boolean cancelBooking(String flightNumber, int seats) throws RemoteException {
 		// TODO Auto-generated method stub
-		return false;
+		if (flights.containsKey(flightNumber)) {
+            int currentSeats = flights.get(flightNumber);
+            flights.put(flightNumber, currentSeats + seats);
+            return true;
+        }
+        return false;
 	}
 
 }
